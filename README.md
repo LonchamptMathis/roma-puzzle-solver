@@ -32,6 +32,14 @@ In this project, we employ advanced techniques to automatically solve Roma puzzl
 4. **Unique Direction per Box**:
    - Each box on the grid can only contain one arrow pointing in each direction (for example, only one arrow pointing up per box).
 
+<!-- Images side by side -->
+<table>
+  <tr>
+    <td><img src="imgs/roma_puzzle.png" alt="Roma Puzzle" width="200" /></td>
+    <td><img src="imgs/solution_to_romapuzzle.png" alt="Roma Puzzle Solution" width="200" /></td>
+  </tr>
+</table>
+
 ### Why is solving a Roma Puzzle hard? 
 Solving a Roma puzzle is an **NP-complete problem**, meaning the complexity of the problem increases rapidly as the grid size grows. This makes it a great subject of study for those interested in graph theory, dynamic programming, and algorithmic complexity challenges.
 
@@ -82,4 +90,4 @@ This Roma Puzzle Solver project combines fascinating aspects of graph theory, dy
 
 ## References 📚
 
-1. Goergen, K., Fernau, H., Oest, E., & Wolf, P. (2021). "All roads lead to Rome: The computational complexity of Roma puzzles."
+1. Goergen, K., Fernau, H., Oest, E., & Wolf, P. (2021). "All roads lead to Rome: The computational complexity of Roma puzzles."R
