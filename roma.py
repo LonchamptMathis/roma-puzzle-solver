@@ -77,6 +77,10 @@ class RomaPuzzle:
         # 1st -> Check that graph is acyclic
         if not nx.is_directed_acyclic_graph(self.graph):
             raise ValueError("The directed graph representing Roma puzzle contains a cycle.")
+        
+        # 2nd -> Roma cell has an out-degree of output of 0
+        if self.graph.out_degree(self.roma_cell) != 0:
+            raise ValueError("Roma cell must have an out-degree of 0.")
 
     def display_board(self):
         """Display the grid using matplotlib with arrows and boxes highlighted."""
@@ -213,3 +217,30 @@ class RomaPuzzle:
         plt.figure(figsize=(8, 8))
         nx.draw(self.graph, pos, with_labels=True, node_size=500, node_color="skyblue", font_size=10, font_weight="bold", arrows=True, arrowstyle='->', arrowsize=20)
         plt.show()
+    
+    def update_arrows(self, new_arrows):
+        """
+        Update the arrows on the board with new directions and validate the board after modification.
+
+        Parameters:
+        - new_arrows: Dictionary with keys as (i, j) tuples and values as directions ('↑', '→', '↓', '←')
+        """
+        # Step 1: Update the arrows on the grid
+        for (i, j), new_arrow in new_arrows.items():
+            self.grid[i][j] = new_arrow
+
+        # Step 2: Check that arrows respect the box condition
+        if not self.box_condition():
+            raise ValueError("The added arrows do not fit the box condition (duplicate arrows in a box).")
+        
+        # Step 3: Recalculate the adjacency matrix and graph
+        self.adj_matrix = self.adjacency_matrix()  # Update the adjacency matrix
+        self.graph = self.generate_graph()  # Generate the new graph
+        
+        # Step 4: Check if the graph is acyclic
+        if not nx.is_directed_acyclic_graph(self.graph):
+            raise ValueError("The directed graph representing Roma puzzle contains a cycle.")
+        
+        # Step 5: Check if the Roma cell has an out-degree of 0
+        if self.graph.out_degree(self.roma_cell) != 0:
+            raise ValueError("Roma cell must have an out-degree of 0.")
