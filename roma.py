@@ -14,6 +14,7 @@ class RomaPuzzle:
         """
         self.n = n  # Grid size n x n
         self.grid = [[' ' for _ in range(n)] for _ in range(n)]  # Empty grid
+        self.arrows = arrows # Store arrows
         self.boxes = boxes  # Box assignments
         self.roma_cell = roma_cell # Roma cell
         self.grid[roma_cell[0]][roma_cell[1]] = '◦' # Place the Roma-cell in the grid
@@ -69,6 +70,10 @@ class RomaPuzzle:
         # 5th -> Check that an arrow doesn't appear more than one time in boxes
         if not self.box_condition():
             raise ValueError("The set of default arrows is invalid")
+        
+        # 6th -> Check that there is not arrow leading flow off the board
+        if not self.borders_valid_arrow():
+            raise ValueError("There is an invalid border arrow")
         
         # Graph condition
         self.adj_matrix = self.adjacency_matrix()
@@ -244,6 +249,9 @@ class RomaPuzzle:
         # Step 5: Check if the Roma cell has an out-degree of 0
         if self.graph.out_degree(self.roma_cell) != 0:
             raise ValueError("Roma cell must have an out-degree of 0.")
+        
+        # Step 6: Fill self.arrows
+        self.arrows = {**self.arrows, **new_arrows}
 
     def is_solved(self):
         """
@@ -277,4 +285,96 @@ class RomaPuzzle:
             return False
 
         # If all conditions are satisfied, the puzzle is solved
+        return True
+    
+    def solve_puzzle(self):
+        """
+        Solve the Roma Puzzle using a search tree algorithm.
+
+        For each cell c_{i,j} , we first consider the four possible directions.
+        1. eliminate directions already assigned to other cells in the same box
+        2. eliminate directions those that would create a closed cycle. 
+        3. If only one direction remains valid, we assign it and move to the next cell, repeating the process recursively.
+        """
+        # Start solving from the first cell
+        if self.solve_cell(0, 0):
+            print("Roma puzzle solved!")
+        else:
+            print("No solution found.")
+
+    def solve_cell(self, i, j, iter: int = 0, max_iter: int = 100):
+        """
+        Recursive function to assign a direction to each cell.
+        
+        Parameters:
+        - i, j: Coordinates of the current cell being processed.
+        
+        Returns:
+        - True if the puzzle can be solved, False otherwise (backtracking).
+        """
+        # If we have reached the end of the grid, check if the puzzle is solved
+        if i == self.n:
+            # Check if the puzzle is solved
+            if self.is_solved():
+                return True
+            # Otherwise, restart with new iteration
+            iter += 1
+            if iter > max_iter:
+                return False
+            else:
+                return self.solve_cell(0, 0, iter)
+            
+        # Calculate next cell position
+        next_i, next_j = (i, j + 1) if j + 1 < self.n else (i + 1, 0)
+
+        # Skip the Roma cell and cells that already have arrows
+        if (i, j) == self.roma_cell or (i, j) in self.arrows:
+            return self.solve_cell(next_i, next_j, iter)
+
+        # Save the current state (for backtracking)
+        backtrack_value = self.grid[i][j]
+        
+        # Try each direction
+        directions = ['↑', '→', '↓', '←']
+        valid_directions = []
+        for direction in directions:
+            self.grid[i][j] = direction
+            
+            # Step 1: Check box condition
+            if not self.box_condition():
+                continue
+
+            # Step 2: Update adjacency matrix and check for cycles
+            self.adj_matrix = self.adjacency_matrix()
+            graph = self.generate_graph()
+            if not nx.is_directed_acyclic_graph(graph):
+                continue
+
+            # Step 3: Checks borders arrow
+            if not self.borders_valid_arrow():
+                continue
+
+            # Step 4: Adding direction to valid_directions
+            valid_directions.append(direction)
+        
+        if len(valid_directions) == 1:
+            self.update_arrows({(i, j): valid_directions[0]})
+        else:
+            # Backtrack: Restore the previous state of the cell
+            self.grid[i][j] = backtrack_value
+            self.adj_matrix = self.adjacency_matrix()
+        
+        self.solve_cell(next_i, next_j, iter)
+    
+    def borders_valid_arrow(self):
+        """Check that there are no arrows pointing away from the Roma puzzle."""
+        for i in range(self.n):
+            if self.grid[i][0] == '←':
+                return False
+            if self.grid[i][self.n - 1] == '→':
+                return False
+            if self.grid[0][i] == '↑':
+                return False
+            if self.grid[self.n - 1][0] == '↓':
+                return False
         return True
