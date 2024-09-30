@@ -4,6 +4,14 @@ Voici le `README.md` en anglais avec les modifications demandées :
 
 Welcome to the Roma Puzzle Solver project! This project aims to provide an efficient method for solving Roma puzzles, a fascinating puzzle game that combines logic, constraints, and graph theory. Whether you're a puzzle enthusiast or interested in algorithmic complexity problems, this solver will help you tackle increasingly challenging grids. 🔍
 
+<!-- Images side by side -->
+<table>
+  <tr>
+    <td><img src="imgs/roma_puzzle.png" alt="Roma Puzzle" width="200" /></td>
+    <td><img src="imgs/solution_to_romapuzzle.png" alt="Roma Puzzle Solution" width="200" /></td>
+  </tr>
+</table>
+
 ## What is the Roma Puzzle? 🤔
 
 The Roma puzzle is played on an n × n grid, where each cell can contain an arrow pointing in one of the four cardinal directions: **↑, →, ↓, ←**. The goal is to fill the empty cells with arrows while adhering to several strict rules:
@@ -31,14 +39,6 @@ In this project, we employ advanced techniques to automatically solve Roma puzzl
 
 4. **Unique Direction per Box**:
    - Each box on the grid can only contain one arrow pointing in each direction (for example, only one arrow pointing up per box).
-
-<!-- Images side by side -->
-<table>
-  <tr>
-    <td><img src="imgs/roma_puzzle.png" alt="Roma Puzzle" width="200" /></td>
-    <td><img src="imgs/solution_to_romapuzzle.png" alt="Roma Puzzle Solution" width="200" /></td>
-  </tr>
-</table>
 
 ### Why is solving a Roma Puzzle hard? 
 Solving a Roma puzzle is an **NP-complete problem**, meaning the complexity of the problem increases rapidly as the grid size grows. This makes it a great subject of study for those interested in graph theory, dynamic programming, and algorithmic complexity challenges.
