@@ -244,3 +244,37 @@ class RomaPuzzle:
         # Step 5: Check if the Roma cell has an out-degree of 0
         if self.graph.out_degree(self.roma_cell) != 0:
             raise ValueError("Roma cell must have an out-degree of 0.")
+
+    def is_solved(self):
+        """
+        Check if the Roma Puzzle has been solved.
+        
+        The puzzle is solved if:
+        1. Box condition is met (no box contains more than one arrow of the same direction).
+        2. The graph is acyclic.
+        3. The Roma cell has an out-degree of 0.
+        4. The graph is weakly connected.
+        
+        Returns:
+        - True if the puzzle is solved, False otherwise.
+        """
+        # Step 1: Check if the box condition is satisfied
+        if not self.box_condition():
+            return False
+
+        # Step 2: Check if the graph is acyclic
+        if not nx.is_directed_acyclic_graph(self.graph):
+            return False
+
+        # Step 3: Check if the Roma cell has an out-degree of 0
+        roma_index = self.roma_cell
+        if self.graph.out_degree(roma_index) != 0:
+            return False
+
+        # Step 4: Check if the graph is weakly connected
+        # A graph is weakly connected if replacing all directed edges with undirected ones makes it connected
+        if not nx.is_weakly_connected(self.graph):
+            return False
+
+        # If all conditions are satisfied, the puzzle is solved
+        return True
